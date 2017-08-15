@@ -1,2 +1,2 @@
 # iocage-plugin-backuppc
-BackupPC Plugin Artifact Repo
+Artifact file(s) for BackupPC iocage plugin
