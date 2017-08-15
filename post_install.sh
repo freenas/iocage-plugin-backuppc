@@ -3,5 +3,8 @@
 # Enable the service
 sysrc -f /etc/rc.conf backuppc_enable="YES"
 
+# Configure the service
+echo "" | sh /usr/local/etc/backuppc/update.sh
+
 # Start the service
 service backuppc start 2>/dev/null
