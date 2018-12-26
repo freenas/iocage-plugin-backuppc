@@ -10,8 +10,9 @@ perl -I /usr/local/lib /usr/local/libexec/backuppc/configure.pl \
   --batch \
   --config-only \
   --config-dir /usr/local/etc/backuppc \
-  --config-override CgiImageDirURL="''" \
-  --config-override CgiAdminUsers='backuppc'
+  --config-override CgiImageDirURL=\"\" \
+  --config-override CgiAdminUsers=\"backuppc\" \
+  --config-override RsyncClientPath=\"/usr/bin/rsync\"
 
 htpasswd -b -c /usr/local/etc/backuppc/htpasswd "backuppc" "password"
 
