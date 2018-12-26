@@ -13,9 +13,10 @@ perl -I /usr/local/lib /usr/local/libexec/backuppc/configure.pl \
   --config-override CgiImageDirURL="''" \
   --config-override CgiAdminUsers='backuppc'
 
-htpasswd -b -c /usr/local/etc/apache24/htpasswd "backuppc" "password"
+htpasswd -b -c /usr/local/etc/backuppc/htpasswd "backuppc" "password"
 
 chmod 750 /usr/local/www/cgi-bin/BackupPC_Admin
+chown backuppc:backuppc -R /usr/local/etc/backuppc
 
 # Start the service
 service backuppc start 2>/dev/null
