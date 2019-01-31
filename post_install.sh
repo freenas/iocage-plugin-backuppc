@@ -23,9 +23,11 @@ chown backuppc:backuppc -R /usr/local/etc/backuppc
 pw usermod -n backuppc -m -d /home/backuppc
 # Generate ssh keys
 su -m backuppc -c "ssh-keygen -t rsa -N '' -f /home/backuppc/.ssh/id_rsa"
+echo
 echo "SSH public key:"
-cat /usr/local/etc/backuppc/.ssh/id_rsa.pub
+cat /home/backuppc/.ssh/id_rsa.pub
+echo "Add this to the authorized_keys of the client machines you want to backup using ssh public key authentication"
 
 # Start the service
-service backuppc start 2>/dev/null
+service backuppc restart 2>/dev/null
 service apache24 restart 2>/dev/null
