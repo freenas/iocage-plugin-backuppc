@@ -1,0 +1,18 @@
+{
+	"servicerestart":"service apache24 restart && service backuppc restart",
+	"serviceget": "/usr/local/bin/backuppcget",
+	"serviceset": "/usr/local/bin/backuppcset",
+	"options": {
+		"adminuser": {
+			"type": "string",
+			"name": "Administrator Username",
+			"description": "Username of the admin user",
+			"readonly": true
+		},
+		"adminpass": {
+			"type": "string",
+			"name": "Administrator Password",
+			"description": "Password for the admin user"
+		}
+	}
+}

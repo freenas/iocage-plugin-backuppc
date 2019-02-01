@@ -1,0 +1,16 @@
+#!/bin/sh
+
+get_adminuser()
+{
+	echo "backuppc"
+}
+
+get_adminpass()
+{
+	echo ""
+}
+
+case $1 in
+	adminuser) get_adminuser ;;
+	adminpass) get_adminpass ;;
+esac

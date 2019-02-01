@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set_adminpass()
+{
+	htpasswd -b -c /usr/local/etc/backuppc/htpasswd "backuppc" $1
+}
+
+case $1 in
+	adminpass) set_adminpass "$2" ;;
+esac
