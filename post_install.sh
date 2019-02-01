@@ -4,8 +4,8 @@ LOGFILE="/var/log/post_install.log"
 date >> $LOGFILE
 
 # Enable the service
-sysrc -f /etc/rc.conf backuppc_enable="YES"
-sysrc -f /etc/rc.conf apache24_enable="YES"
+sysrc -f /etc/rc.conf backuppc_enable="YES" >> $LOGFILE
+sysrc -f /etc/rc.conf apache24_enable="YES" >> $LOGFILE
 
 # Configure the service
 echo "" | sh /usr/local/etc/backuppc/update.sh >> $LOGFILE
@@ -44,4 +44,4 @@ echo "You can change the password with"
 echo "iocage set -P adminpass=\"newpassword\" backuppc"
 
 echo
-echo "Full installation log at $LOGIFLE"
+echo "Full installation log at $LOGFILE"
