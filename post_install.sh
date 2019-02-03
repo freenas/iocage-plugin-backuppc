@@ -3,6 +3,8 @@
 LOGFILE="/var/log/post_install.log"
 date >> $LOGFILE
 
+BPC_USER=backuppc
+
 # Enable the service
 sysrc -f /etc/rc.conf backuppc_enable="YES" >> $LOGFILE
 sysrc -f /etc/rc.conf apache24_enable="YES" >> $LOGFILE
@@ -14,19 +16,27 @@ perl -I /usr/local/lib /usr/local/libexec/backuppc/configure.pl \
   --config-only \
   --config-dir /usr/local/etc/backuppc \
   --config-override CgiImageDirURL=\"\" \
-  --config-override CgiAdminUsers=\"backuppc\" \
+  --config-override CgiAdminUsers=\"${BPC_USER}\" \
   --config-override RsyncClientPath=\"/usr/bin/rsync\" \
   >> $LOGFILE
 
 htpasswd -b -c /usr/local/etc/backuppc/htpasswd "backuppc" "password" >> $LOGFILE
 
 chmod 750 /usr/local/www/cgi-bin/BackupPC_Admin
-chown backuppc:backuppc -R /usr/local/etc/backuppc
+chown ${BPC_USER}:${BPC_USER} -R /usr/local/etc/backuppc
 
 # Set home directory (for ssh keys)
-pw usermod -n backuppc -m -d /home/backuppc
+BPC_HOME=/home/${BPC_USER}
+pw usermod -n ${BPC_USER} -m -d ${BPC_HOME}
 # Generate ssh keys
-su -m backuppc -c "ssh-keygen -t rsa -N '' -f /home/backuppc/.ssh/id_rsa" >> $LOGFILE
+su -m ${BPC_USER} -c "ssh-keygen -t rsa -N '' -f ${BPC_HOME}/.ssh/id_rsa" >> $LOGFILE
+# Disable strict host key checking
+cat > ${BPC_HOME}/.ssh/config <<- EOM
+Host *
+  StrictHostKeyChecking no
+EOM
+chmod 600 ${BPC_HOME}/.ssh/config
+chown ${BPC_USER}:${BPC_USER} ${BPC_HOME}/.ssh/config
 
 # Start the service
 service backuppc restart 2>/dev/null >> $LOGFILE
@@ -34,7 +44,7 @@ service apache24 restart 2>/dev/null >> $LOGFILE
 
 echo
 echo "SSH public key:"
-cat /home/backuppc/.ssh/id_rsa.pub
+cat ${BPC_HOME}/.ssh/id_rsa.pub
 echo "Add this to the authorized_keys of the client machines you want to backup using ssh public key authentication"
 
 echo
