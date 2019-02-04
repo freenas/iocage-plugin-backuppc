@@ -20,7 +20,7 @@ perl -I /usr/local/lib /usr/local/libexec/backuppc/configure.pl \
   --config-override RsyncClientPath=\"/usr/bin/rsync\" \
   >> $LOGFILE
 
-// Create web admin user
+# Create web admin user
 htpasswd -b -c /usr/local/etc/backuppc/htpasswd "backuppc" "password" >> $LOGFILE
 
 chmod 750 /usr/local/www/cgi-bin/BackupPC_Admin
@@ -29,8 +29,8 @@ chown ${BPC_USER}:${BPC_USER} -R /usr/local/etc/backuppc
 # Create self signed web certificate
 TLS_DIR=/usr/local/etc/apache24/tls
 mkdir -p ${TLS_DIR}/self-signed
-# not supported by old openssl version:	-addext "subjectAltName = DNS:`hostname`" \
-openssl req -newkey rsa:4096 -nodes \
+# TODO not supported by old openssl version:	-addext "subjectAltName = DNS:`hostname`" \
+openssl req -newkey rsa:4096 -nodes -sha256 \
   -subj "/O=BackupPC/CN=`hostname`" \
   -keyout ${TLS_DIR}/self-signed/key.pem \
   -out ${TLS_DIR}/self-signed/csr.pem \
@@ -41,6 +41,10 @@ openssl x509 \
   -req -days 2555 -out ${TLS_DIR}/self-signed/cert.pem \
   >> $LOGFILE
 TLS_SS_FP=`openssl x509 -in ${TLS_DIR}/self-signed/cert.pem -noout -sha256 -fingerprint`
+# TODO acme/user supplied certs go in other directories under ${TLS_DIR}
+# create symlinks
+ln -sf ./self-signed/key.pem ${TLS_DIR}/key.pem
+ln -sf ./self-signed/cert.pem ${TLS_DIR}/cert.pem
 chmod -R 600 ${TLS_DIR}
 chown -R ${BPC_USER}:${BPC_USER} ${TLS_DIR}
 
