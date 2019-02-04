@@ -16,15 +16,13 @@ perl -I /usr/local/lib /usr/local/libexec/backuppc/configure.pl \
   --config-only \
   --config-dir /usr/local/etc/backuppc \
   --config-override CgiImageDirURL=\"\" \
-  --config-override CgiAdminUsers=\"backuppc\" \
+  --config-override CgiAdminUsers=\"admin\" \
   --config-override RsyncClientPath=\"/usr/bin/rsync\" \
   >> $LOGFILE
-
-# Create web admin user
-htpasswd -b -c /usr/local/etc/backuppc/htpasswd "backuppc" "password" >> $LOGFILE
-
 chmod 750 /usr/local/www/cgi-bin/BackupPC_Admin
 chown ${BPC_USER}:${BPC_USER} -R /usr/local/etc/backuppc
+# Create web admin user
+/usr/local/bin/backuppcset "adminpass" "password" >> $LOGFILE
 
 # Create self signed web certificate
 TLS_DIR=/usr/local/etc/apache24/tls
@@ -76,7 +74,7 @@ echo ${TLS_SS_FP}
 
 echo
 echo "Standard username and password is"
-echo "backuppc password"
+echo "admin password"
 echo "You can change the password with"
 echo "iocage set -P adminpass=\"newpassword\" backuppc"
 

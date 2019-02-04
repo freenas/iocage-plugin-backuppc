@@ -2,7 +2,7 @@
 
 get_adminuser()
 {
-	echo "backuppc"
+	echo "admin"
 }
 
 get_adminpass()

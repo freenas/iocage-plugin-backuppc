@@ -2,7 +2,7 @@
 
 set_adminpass()
 {
-	htpasswd -b -c /usr/local/etc/backuppc/htpasswd "backuppc" $1
+	htpasswd -b /usr/local/etc/backuppc/htpasswd "admin" $1
 }
 
 case $1 in
