@@ -27,6 +27,7 @@ chown ${BPC_USER}:${BPC_USER} -R /usr/local/etc/backuppc
 # Create self signed web certificate
 TLS_DIR=/usr/local/etc/apache24/tls
 mkdir -p ${TLS_DIR}/self-signed
+echo "self-signed" > ${TLS_DIR}/self-signed/MODE # marks the current mode for settings script
 # TODO not supported by old openssl version:	-addext "subjectAltName = DNS:`hostname`" \
 openssl req -newkey rsa:4096 -nodes -sha256 \
   -subj "/O=BackupPC/CN=`hostname`" \
@@ -41,8 +42,7 @@ openssl x509 \
 TLS_SS_FP=`openssl x509 -in ${TLS_DIR}/self-signed/cert.pem -noout -sha256 -fingerprint`
 # TODO acme/user supplied certs go in other directories under ${TLS_DIR}
 # create symlinks
-ln -sf ./self-signed/key.pem ${TLS_DIR}/key.pem
-ln -sf ./self-signed/cert.pem ${TLS_DIR}/cert.pem
+ln -sf ./self-signed ${TLS_DIR}/live
 chmod -R 600 ${TLS_DIR}
 chown -R ${BPC_USER}:${BPC_USER} ${TLS_DIR}
 

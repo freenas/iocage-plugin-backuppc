@@ -13,6 +13,15 @@
 			"type": "string",
 			"name": "Administrator Password",
 			"description": "Password for the admin user"
+		},
+		"tlsmode": {
+			"type": "combo",
+			"name": "TLS Certificate Mode",
+			"description": "What certificate to use for tls.",
+			"default": "self-signed",
+			"options": {
+				"self-signed" : "Self-signed"
+			}
 		}
 	}
 }

@@ -5,6 +5,15 @@ set_adminpass()
 	htpasswd -b /usr/local/etc/backuppc/htpasswd "admin" $1
 }
 
+set_tlsmode() # TODO Stub
+{
+	case $1 in
+		self-signed) echo "OK" ;;
+		*) echo "Mode not supported." ;;
+	esac
+}
+
 case $1 in
 	adminpass) set_adminpass "$2" ;;
+	tlsmode) set_tlsmode "$2" ;;
 esac
