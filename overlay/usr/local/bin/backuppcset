@@ -5,12 +5,30 @@ set_adminpass()
 	htpasswd -b /usr/local/etc/backuppc/htpasswd "admin" $1
 }
 
+TLS_DIR=/usr/local/etc/apache24/tls
 set_tlsmode() # TODO Stub
 {
 	case $1 in
-		self-signed) echo "OK" ;;
-		*) echo "Mode not supported." ;;
+		self-signed)
+			rm -f ${TLS_DIR}/live
+			ln -sf ./self-signed ${TLS_DIR}/live ;;
+		letsencrypt)
+			if ! [ -f "/root/.acme.sh/acme.sh" ] ; then
+				curl https://get.acme.sh | sh
+			fi
+			/root/.acme.sh/acme.sh  --issue  --webroot /usr/local/www/acme -d `hostname`
+			acme.sh --install-cert -d `hostname` \
+				--cert-file ${TLS_DIR}/letsencrypt/cert.pem \
+				--key-file ${TLS_DIR}/letsencrypt/key.pem \
+				--fullchain-file ${TLS_DIR}/letsencrypt/chain.pem
+				
+			rm -f ${TLS_DIR}/live
+			ln -sf ./letsencrypt ${TLS_DIR}/live ;;
+		*)
+			echo "Mode not supported."
+			return 1 ;;
 	esac
+	service apache24 reload
 }
 
 case $1 in

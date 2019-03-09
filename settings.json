@@ -20,7 +20,8 @@
 			"description": "What certificate to use for tls.",
 			"default": "self-signed",
 			"options": {
-				"self-signed" : "Self-signed"
+				"self-signed" : "Self-signed",
+				"letsencrypt" : "Let's Encrypt"
 			}
 		}
 	}

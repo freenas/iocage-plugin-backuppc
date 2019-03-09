@@ -4,6 +4,8 @@ LOGFILE="/var/log/post_install.log"
 date >> $LOGFILE
 
 BPC_USER=backuppc
+BPC_GET=/usr/local/bin/backuppcget
+BPC_SET=/usr/local/bin/backuppcset
 
 # Enable the service
 sysrc -f /etc/rc.conf backuppc_enable="YES" >> $LOGFILE
@@ -22,12 +24,14 @@ perl -I /usr/local/lib /usr/local/libexec/backuppc/configure.pl \
 chmod 750 /usr/local/www/cgi-bin/BackupPC_Admin
 chown ${BPC_USER}:${BPC_USER} -R /usr/local/etc/backuppc
 # Create web admin user
-/usr/local/bin/backuppcset "adminpass" "password" >> $LOGFILE
+${BPC_SET} "adminpass" "password" >> $LOGFILE
 
 # Create self signed web certificate
 TLS_DIR=/usr/local/etc/apache24/tls
 mkdir -p ${TLS_DIR}/self-signed
+mkdir -p ${TLS_DIR}/letsencrypt
 echo "self-signed" > ${TLS_DIR}/self-signed/MODE # marks the current mode for settings script
+echo "letsencrypt" > ${TLS_DIR}/letsencrypt/MODE
 # TODO not supported by old openssl version:	-addext "subjectAltName = DNS:`hostname`" \
 openssl req -newkey rsa:4096 -nodes -sha256 \
   -subj "/O=BackupPC/CN=`hostname`" \
@@ -40,11 +44,11 @@ openssl x509 \
   -req -days 2555 -out ${TLS_DIR}/self-signed/cert.pem \
   >> $LOGFILE
 TLS_SS_FP=`openssl x509 -in ${TLS_DIR}/self-signed/cert.pem -noout -sha256 -fingerprint`
-# TODO acme/user supplied certs go in other directories under ${TLS_DIR}
-# create symlinks
-ln -sf ./self-signed ${TLS_DIR}/live
+ln -sf cert.pem ${TLS_DIR}/self-signed/chain.pem
 chmod -R 600 ${TLS_DIR}
 chown -R ${BPC_USER}:${BPC_USER} ${TLS_DIR}
+# create symlink
+${BPC_SET} "tlsmode" "self-signed" >> $LOGFILE
 
 # Set home directory (for ssh keys)
 BPC_HOME=/home/${BPC_USER}
