@@ -16,12 +16,12 @@ set_tlsmode() # TODO Stub
 			if ! [ -f "/root/.acme.sh/acme.sh" ] ; then
 				curl https://get.acme.sh | sh
 			fi
-			/root/.acme.sh/acme.sh  --issue  --webroot /usr/local/www/acme -d `hostname`
-			acme.sh --install-cert -d `hostname` \
+			/root/.acme.sh/acme.sh  --issue  --webroot /usr/local/www/acme  -d `hostname`
+			/root/.acme.sh/acme.sh  --install-cert  -d `hostname` \
 				--cert-file ${TLS_DIR}/letsencrypt/cert.pem \
 				--key-file ${TLS_DIR}/letsencrypt/key.pem \
 				--fullchain-file ${TLS_DIR}/letsencrypt/chain.pem
-				
+
 			rm -f ${TLS_DIR}/live
 			ln -sf ./letsencrypt ${TLS_DIR}/live ;;
 		*)
